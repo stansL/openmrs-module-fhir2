@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -99,14 +100,21 @@ public class FhirTaskTranslatorImplTest {
 		taskTranslator.setReferenceTranslator(referenceTranslator);
 		taskTranslator.setConceptTranslator(conceptTranslator);
 	}
-	
+
 	@Test
 	public void toFhirResource_shouldTranslateOpenmrsTaskToFhirTask() {
 		FhirTask task = new FhirTask();
 		Task result = taskTranslator.toFhirResource(task);
 		assertThat(result, notNullValue());
 	}
-	
+
+	@Test
+	public void toFhirResource_shouldTranslateNullToNull() {
+		Task result = taskTranslator.toFhirResource(null);
+
+		assertThat(result, nullValue());
+	}
+
 	@Test
 	public void toOpenmrsType_shouldTranslateFhirTaskToOpenmrsTask() {
 		Task task = new Task();
@@ -115,7 +123,14 @@ public class FhirTaskTranslatorImplTest {
 		
 		assertThat(result, notNullValue());
 	}
-	
+
+	@Test
+	public void toOpenmrsType_shouldTranslateNullToNull() {
+		FhirTask result = taskTranslator.toOpenmrsType(null);
+
+		assertThat(result, nullValue());
+	}
+
 	@Test
 	public void toOpenmrsType_shouldTranslateNewOpenmrsTask() {
 		Task fhirTask = new Task();
@@ -162,6 +177,24 @@ public class FhirTaskTranslatorImplTest {
 		
 		assertThat(result, notNullValue());
 		assertThat(result.getStatus(), equalTo(OPENMRS_NEW_TASK_STATUS));
+	}
+
+	@Test
+	public void toOpenmrsType_shouldReturnExistingOpenmrsTaskWhenFhirTaskNull() {
+		FhirTask task = new FhirTask();
+		task.setUuid(TASK_UUID);
+
+		FhirTask result = taskTranslator.toOpenmrsType(task, null);
+
+		assertThat(result, notNullValue());
+		assertThat(result.getUuid(), equalTo(TASK_UUID));
+	}
+
+	@Test
+	public void toOpenmrsType_shouldReturnNullWhenAllNull() {
+		FhirTask result = taskTranslator.toOpenmrsType(null, null);
+
+		assertThat(result, nullValue());
 	}
 	
 	@Test
@@ -258,11 +291,11 @@ public class FhirTaskTranslatorImplTest {
 	@Test
 	public void toFhirResource_shouldTranslateBasedOn() {
 		FhirTask task = new FhirTask();
-		
+
 		shouldTranslateReferenceListToFhir(task, FhirConstants.SERVICE_REQUEST, SERVICE_REQUEST_UUID,
 		    task::setBasedOnReferences, t -> t.getBasedOn().stream().collect(Collectors.toList()));
 	}
-	
+
 	@Test
 	public void toOpenmrsType_shouldTranslateBasedOn() {
 		Task task = new Task();

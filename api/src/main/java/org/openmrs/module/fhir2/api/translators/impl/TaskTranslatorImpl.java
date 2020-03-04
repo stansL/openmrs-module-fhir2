@@ -46,9 +46,10 @@ public class TaskTranslatorImpl implements TaskTranslator {
 	
 	@Override
 	public Task toFhirResource(FhirTask openmrsTask) {
-		Task fhirTask = new Task();
+		Task fhirTask = null;
 		
 		if (openmrsTask != null) {
+			fhirTask = new Task();
 			setFhirTaskFields(openmrsTask, fhirTask);
 			fhirTask.addContained(provenanceTranslator.getCreateProvenance(openmrsTask));
 			fhirTask.addContained(provenanceTranslator.getUpdateProvenance(openmrsTask));
@@ -59,9 +60,10 @@ public class TaskTranslatorImpl implements TaskTranslator {
 	
 	@Override
 	public FhirTask toOpenmrsType(Task fhirTask) {
-		FhirTask openmrsTask = new FhirTask();
-		
+		FhirTask openmrsTask = null;
+
 		if (fhirTask != null) {
+			openmrsTask = new FhirTask();
 			setOpenmrsTaskFields(openmrsTask, fhirTask);
 		}
 		
