@@ -61,7 +61,7 @@ public class TaskTranslatorImpl implements TaskTranslator {
 	@Override
 	public FhirTask toOpenmrsType(Task fhirTask) {
 		FhirTask openmrsTask = null;
-
+		
 		if (fhirTask != null) {
 			openmrsTask = new FhirTask();
 			setOpenmrsTaskFields(openmrsTask, fhirTask);
