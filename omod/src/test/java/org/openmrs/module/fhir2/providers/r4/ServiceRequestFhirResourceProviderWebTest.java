@@ -10,7 +10,11 @@
 package org.openmrs.module.fhir2.providers.r4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.ServletException;
@@ -18,6 +22,7 @@ import javax.servlet.ServletException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.hamcrest.MatcherAssert;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +66,7 @@ public class ServiceRequestFhirResourceProviderWebTest extends BaseFhirR4Resourc
 	}
 	
 	@Test
-	public void getEncounterByWrongUuid_shouldReturn404() throws Exception {
+	public void getServiceRequestByWrongUuid_shouldReturn404() throws Exception {
 		MockHttpServletResponse response = get("/ServiceRequest/" + WRONG_SERVICE_REQUEST_UUID).accept(FhirMediaTypes.JSON)
 		        .go();
 		

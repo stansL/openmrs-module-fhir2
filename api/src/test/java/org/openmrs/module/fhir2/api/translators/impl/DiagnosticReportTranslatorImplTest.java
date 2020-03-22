@@ -104,8 +104,8 @@ public class DiagnosticReportTranslatorImplTest {
 		assertThat(result, notNullValue());
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void toFhirResource_shouldThrowIllegalArgumentExceptionIfObsIsNotAnObsgroup() {
+	@Test
+	public void toFhirResource_shouldTranslateObsIfObsIsNotAnObsgroup() {
 		Obs obs = new Obs();
 		
 		DiagnosticReport result = translator.toFhirResource(obs);
@@ -217,20 +217,26 @@ public class DiagnosticReportTranslatorImplTest {
 		assertThat(result.getMeta().getLastUpdated(), DateMatchers.sameDay(new Date()));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void toOpenmrsType_shouldErrorOnCreatingEmptyDiagnosticReport() {
+	@Test
+	public void toOpenmrsType_shouldAllowCreatingEmptyDiagnosticReport() {
 		DiagnosticReport emptyDiagnosticReport = new DiagnosticReport();
 		emptyDiagnosticReport.setId(PARENT_UUID);
 		
-		translator.toOpenmrsType(emptyDiagnosticReport);
+		Obs result = translator.toOpenmrsType(emptyDiagnosticReport);
+		
+		assertThat(result, notNullValue());
+		assertThat(result.getUuid(), equalTo(PARENT_UUID));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void toOpenmrsType_shouldErrorOnUpdatingEmptyDiagnosticReport() {
+	@Test
+	public void toOpenmrsType_shouldAllowUpdatingEmptyDiagnosticReport() {
 		DiagnosticReport emptyDiagnosticReport = new DiagnosticReport();
 		emptyDiagnosticReport.setId(PARENT_UUID);
 		
-		translator.toOpenmrsType(obsGroup, emptyDiagnosticReport);
+		Obs result = translator.toOpenmrsType(obsGroup, emptyDiagnosticReport);
+		
+		assertThat(result, notNullValue());
+		assertThat(result.getUuid(), equalTo(PARENT_UUID));
 	}
 	
 	@Test

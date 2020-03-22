@@ -142,26 +142,60 @@ public class ObservationTranslatorImpl implements ObservationTranslator {
 		}
 		
 		existingObs.setUuid(observation.getId());
-		observationStatusTranslator.toOpenmrsType(existingObs, observation.getStatus());
 		
-		existingObs.setEncounter(encounterReferenceTranslator.toOpenmrsType(observation.getEncounter()));
-		existingObs.setPerson(patientReferenceTranslator.toOpenmrsType(observation.getSubject()));
+		existingObs = setObsFields(existingObs, observation);
 		
-		existingObs.setConcept(conceptTranslator.toOpenmrsType(observation.getCode()));
+		return existingObs;
+	}
+	
+	@Override
+	public Obs toOpenmrsType(Observation observation) {
+		Obs newObs = new Obs();
+		
+		if (observation == null) {
+			return null;
+		}
+		
+		if (observation.hasId()) {
+			newObs.setUuid(observation.getId());
+		}
+		
+		return setObsFields(newObs, observation);
+	}
+	
+	private Obs setObsFields(Obs obs, Observation observation) {
+		observationStatusTranslator.toOpenmrsType(obs, observation.getStatus());
+		
+		if (observation.hasEncounter()) {
+			obs.setEncounter(encounterReferenceTranslator.toOpenmrsType(observation.getEncounter()));
+		}
+		
+		if (observation.hasSubject()) {
+			obs.setPerson(patientReferenceTranslator.toOpenmrsType(observation.getSubject()));
+		}
+		
+		if (observation.hasCode()) {
+			obs.setConcept(conceptTranslator.toOpenmrsType(observation.getCode()));
+		}
+		
+		if (observation.hasValue()) {
+			obs = observationValueTranslator.toOpenmrsType(obs, observation.getValue());
+		}
 		
 		for (Reference reference : observation.getHasMember()) {
-			existingObs.addGroupMember(observationReferenceTranslator.toOpenmrsType(reference));
+			obs.addGroupMember(observationReferenceTranslator.toOpenmrsType(reference));
 		}
 		
 		if (observation.getInterpretation().size() > 0) {
-			interpretationTranslator.toOpenmrsType(existingObs, observation.getInterpretation().get(0));
+			interpretationTranslator.toOpenmrsType(obs, observation.getInterpretation().get(0));
 		}
-		datetimeTranslator.toOpenmrsType(existingObs, observation.getEffectiveDateTimeType());
+		
+		datetimeTranslator.toOpenmrsType(obs, observation.getEffectiveDateTimeType());
 		
 		if (observation.hasBasedOn()) {
-			existingObs.setOrder(basedOnReferenceTranslator.toOpenmrsType(observation.getBasedOn().get(0)));
+			obs.setOrder(basedOnReferenceTranslator.toOpenmrsType(observation.getBasedOn().get(0)));
 		}
 		
-		return existingObs;
+		return obs;
 	}
 }

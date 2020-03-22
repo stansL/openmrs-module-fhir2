@@ -9,10 +9,17 @@
  */
 package org.openmrs.module.fhir2.api.impl;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -81,4 +88,23 @@ public class FhirServiceRequestServiceImplTest {
 		assertThat(result.getId(), equalTo(SERVICE_REQUEST_UUID));
 	}
 	
+	@Test
+	public void searchForAllServiceRequests_shouldReturnAllServiceRequests() {
+		Collection<TestOrder> testOrders = new ArrayList<>();
+		TestOrder order = new TestOrder();
+		order.setUuid(SERVICE_REQUEST_UUID);
+		testOrders.add(order);
+		
+		ServiceRequest serviceRequest = new ServiceRequest();
+		serviceRequest.setId(SERVICE_REQUEST_UUID);
+		
+		when(dao.searchForTestOrders()).thenReturn(testOrders);
+		when(translator.toFhirResource(order)).thenReturn(serviceRequest);
+		
+		Collection<ServiceRequest> results = serviceRequestService.searchForServiceRequests();
+		
+		assertThat(results, notNullValue());
+		assertThat(results, not(empty()));
+		assertThat(results, hasItem(hasProperty("id", equalTo(SERVICE_REQUEST_UUID))));
+	}
 }

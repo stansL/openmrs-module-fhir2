@@ -80,3 +80,5 @@ nb-configuration.xml
 ##############################
 .DS_Store
 
+/api/.factorypath
+/omod/.factorypath

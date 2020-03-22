@@ -20,10 +20,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.MethodNotAllowedException;
+import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.Task;
 import org.junit.Before;
 import org.junit.Test;
@@ -161,6 +163,57 @@ public class FhirTaskServiceImplTest {
 		when(dao.get(WRONG_TASK_UUID)).thenReturn(null);
 		
 		fhirTaskService.update(WRONG_TASK_UUID, fhirTask);
+	}
+
+	@Test
+	public void getTaskByBasedOn_shouldGetTasksByBasedOnServiceRequest() {
+		Collection<FhirTask> basedOnTasks;
+		Collection<org.hl7.fhir.r4.model.Task> basedOnFhirTasks;
+
+		FhirTask t1 = new FhirTask();
+		FhirTask t2 = new FhirTask();
+
+		t1.setUuid(TASK_UUID);
+		t2.setUuid(WRONG_TASK_UUID);
+
+		org.hl7.fhir.r4.model.Task f1 = new org.hl7.fhir.r4.model.Task();
+		org.hl7.fhir.r4.model.Task f2 = new org.hl7.fhir.r4.model.Task();
+
+		f1.setId(TASK_UUID);
+		f2.setId(WRONG_TASK_UUID);
+
+		basedOnTasks = Arrays.asList(t1, t2);
+		basedOnFhirTasks = Arrays.asList(f1, f2);
+
+		when(dao.getTasksByBasedOnUuid(ServiceRequest.class, SERVICE_REQUEST_UUID)).thenReturn(basedOnTasks);
+		when(translator.toFhirResource(t1)).thenReturn(f1);
+		when(translator.toFhirResource(t2)).thenReturn(f2);
+
+		Collection<org.hl7.fhir.r4.model.Task> result = fhirTaskService.getTasksByBasedOn(ServiceRequest.class,
+		    SERVICE_REQUEST_UUID);
+
+		assertThat(result, notNullValue());
+		assertThat(result, equalTo(basedOnFhirTasks));
+	}
+
+	@Test
+	public void shouldReturnEmptyListForTaskByBasedOnForUnsupportedResources() {
+		Collection<org.hl7.fhir.r4.model.Task> result = fhirTaskService.getTasksByBasedOn(Patient.class,
+		    SERVICE_REQUEST_UUID);
+
+		assertThat(result, notNullValue());
+		assertThat(result, empty());
+	}
+
+	@Test
+	public void shouldReturnEmptyListForNoAssociatedTasks() {
+		when(dao.getTasksByBasedOnUuid(ServiceRequest.class, SERVICE_REQUEST_UUID)).thenReturn(Collections.emptyList());
+
+		Collection<org.hl7.fhir.r4.model.Task> result = fhirTaskService.getTasksByBasedOn(ServiceRequest.class,
+		    SERVICE_REQUEST_UUID);
+
+		assertThat(result, notNullValue());
+		assertThat(result, empty());
 	}
 	
 	@Test

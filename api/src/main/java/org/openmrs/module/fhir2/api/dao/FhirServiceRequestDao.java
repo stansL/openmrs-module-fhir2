@@ -13,5 +13,5 @@ import org.openmrs.Auditable;
 import org.openmrs.OpenmrsObject;
 
 public interface FhirServiceRequestDao<T extends OpenmrsObject & Auditable> extends FhirDao<T> {
-	
+
 }

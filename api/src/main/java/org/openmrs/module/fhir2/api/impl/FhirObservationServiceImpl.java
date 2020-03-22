@@ -74,4 +74,9 @@ public class FhirObservationServiceImpl extends BaseFhirService<Observation, org
 		
 		return searchQuery.getQueryResults(theParams, dao, translator);
 	}
+	
+	@Override
+	public Observation saveObservation(Observation observation) {
+		return observationTranslator.toFhirResource(dao.saveObs(observationTranslator.toOpenmrsType(observation)));
+	}
 }

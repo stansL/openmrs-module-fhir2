@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.fhir2.api.translators.impl;
 
+import java.util.Date;
+
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.hl7.fhir.r4.model.DiagnosticReport;
@@ -48,10 +50,6 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 		if (obsGroup == null)
 			return null;
 		
-		if (!obsGroup.isObsGrouping()) {
-			throw new IllegalArgumentException("Obs object must be an Obs group.");
-		}
-		
 		DiagnosticReport diagnosticReport = new DiagnosticReport();
 		
 		setResourceElements(obsGroup, diagnosticReport);
@@ -65,10 +63,6 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 	public Obs toOpenmrsType(DiagnosticReport diagnosticReport) {
 		if (diagnosticReport == null) {
 			return null;
-		}
-		
-		if (!diagnosticReport.hasResult()) {
-			throw new IllegalArgumentException("Diagnostic Report must have at least one result");
 		}
 		
 		Obs translatedObs = new Obs();
@@ -86,10 +80,6 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 		
 		if (diagnosticReport == null) {
 			return existingObs;
-		}
-		
-		if (!diagnosticReport.hasResult()) {
-			throw new IllegalArgumentException("Diagnostic Report must have at least one result");
 		}
 		
 		setOpenmrsFields(diagnosticReport, existingObs);
@@ -133,15 +123,17 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 		diagnosticReport.setIssued(obsGroup.getDateCreated());
 		
 		// DiagnosticReport.result
-		for (Obs obs : obsGroup.getGroupMembers()) {
-			diagnosticReport.addResult(observationReferenceTranslator.toFhirResource(obs));
+		if (obsGroup.hasGroupMembers()) {
+			for (Obs obs : obsGroup.getGroupMembers()) {
+				diagnosticReport.addResult(observationReferenceTranslator.toFhirResource(obs));
+			}
 		}
 	}
 	
 	private void setOpenmrsFields(DiagnosticReport diagnosticReport, Obs translatedObs) {
 		
 		// DiagnosticReport.id
-		if (translatedObs.getUuid() != null) {
+		if (diagnosticReport.hasId()) {
 			translatedObs.setUuid(diagnosticReport.getId());
 		}
 		
@@ -173,5 +165,8 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 		// TODO: distinguish between DianosticReport and Observation mapping for a given Obs
 		translatedObs.setComment("mapped DiagnosticReport");
 		
+		// Missing Obs_Datetime
+		// TODO: handle like Observation Translator
+		translatedObs.setObsDatetime(new Date());
 	}
 }

@@ -110,7 +110,7 @@ public class FhirObservationDaoImpl extends BaseFhirDao<Obs> implements FhirObse
 			if (!containsAlias(criteria, "c")) {
 				criteria.createAlias("concept", "c");
 			}
-			
+
 			handleCodeableConcept(criteria, code, "c", "cm", "crt").ifPresent(criteria::add);
 		}
 	}
@@ -120,27 +120,27 @@ public class FhirObservationDaoImpl extends BaseFhirDao<Obs> implements FhirObse
 			if (!containsAlias(criteria, "c")) {
 				criteria.createAlias("concept", "c");
 			}
-			
+
 			if (!containsAlias(criteria, "cc")) {
 				criteria.createAlias("c.conceptClass", "cc");
 			}
 		}
-		
+
 		handleAndListParam(category, (param) -> {
 			if (param.getValue() == null) {
 				return Optional.empty();
 			}
-			
+
 			String conceptClass = categoryMap.getConceptClassUuid(param.getValue());
-			
+
 			if (conceptClass == null) {
 				return Optional.empty();
 			}
-			
+
 			return Optional.of(eq("cc.uuid", conceptClass));
 		}).ifPresent(criteria::add);
 	}
-	
+
 	private void handleValueCodedConcept(Criteria criteria, TokenAndListParam valueConcept) {
 		if (valueConcept != null) {
 			if (!containsAlias(criteria, "vc")) {
@@ -155,7 +155,7 @@ public class FhirObservationDaoImpl extends BaseFhirDao<Obs> implements FhirObse
 		if ("date".equals(paramName)) {
 			return "obsDatetime";
 		}
-		
+
 		return null;
 	}
 }

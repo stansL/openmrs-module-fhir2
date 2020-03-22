@@ -123,25 +123,24 @@
             <column name="owner_reference_id" type="int"/>
             <column name="encounter_reference_id" type="int"/>
             <column name="for_reference_id" type="int"/>
-            <column name="based_on" type="varchar(255)"/>
-            <column name="creator" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="date_created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="changed_by" type="int"/>
-            <column name="date_changed" type="datetime"/>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="retired" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-            <column name="retired_by" type="int"/>
-            <column name="date_retired" type="datetime"/>
-            <column name="retire_reason" type="varchar(255)" defaultValue="null"/>
-        </createTable>
+            <column name="creator" type="int" >
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" defaultValue="null" />
+		</createTable>
 
         <addForeignKeyConstraint constraintName="task_creator"
                                  baseTableName="fhir_task" baseColumnNames="creator"
@@ -172,37 +171,37 @@
             <column name="reference" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar(255)"/>
-            <column name="creator" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="date_created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="changed_by" type="int"/>
-            <column name="date_changed" type="datetime"/>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="retired" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-            <column name="retired_by" type="int"/>
-            <column name="date_retired" type="datetime"/>
-            <column name="retire_reason" type="varchar(255)" defaultValue="null"/>
-            <column name="uuid" type="varchar(38)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint baseTableName="fhir_reference" baseColumnNames="creator"
-                                 constraintName="fhir_reference_creator_fk"
-                                 referencedTableName="users" referencedColumnNames="user_id"/>
-        <addForeignKeyConstraint baseTableName="fhir_reference" baseColumnNames="changed_by"
-                                 constraintName="fhir_reference_changed_by_fk"
-                                 referencedTableName="users" referencedColumnNames="user_id"/>
-        <addForeignKeyConstraint baseTableName="fhir_reference" baseColumnNames="retired_by"
-                                 constraintName="fhir_reference_retired_by_fk"
-                                 referencedTableName="users" referencedColumnNames="user_id"/>
+            <column name="description" type="varchar(255)" />
+			<column name="creator" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" defaultValue="null" />
+			<column name="uuid" type="varchar(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseTableName="fhir_reference" baseColumnNames="creator"
+								 constraintName="fhir_reference_creator_fk"
+								 referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint baseTableName="fhir_reference" baseColumnNames="changed_by"
+								 constraintName="fhir_reference_changed_by_fk"
+								 referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint baseTableName="fhir_reference" baseColumnNames="retired_by"
+								 constraintName="fhir_reference_retired_by_fk"
+								 referencedTableName="users" referencedColumnNames="user_id" />
 
         <addForeignKeyConstraint baseTableName="fhir_task" baseColumnNames="owner_reference_id"
                                  constraintName="task_owner_reference_fk"
@@ -261,35 +260,33 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="task_id" type="int"/>
-            <column name="type_id" type="int">
-                <constraints nullable="false"/>
-            </column>
+            <column name="type_id" type="int"/>
             <column name="value_datetime" type="datetime"/>
             <column name="value_numeric" type="double"/>
             <column name="value_text" type="varchar(255)"/>
             <column name="value_reference_id" type="int"/>
-            <column name="description" type="varchar(255)"/>
-            <column name="creator" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="date_created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="changed_by" type="int"/>
-            <column name="date_changed" type="datetime"/>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="retired" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-            <column name="retired_by" type="int"/>
-            <column name="date_retired" type="datetime"/>
-            <column name="retire_reason" type="varchar(255)" defaultValue="null"/>
-            <column name="uuid" type="varchar(38)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-        </createTable>
+            <column name="description" type="varchar(255)" />
+			<column name="creator" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" defaultValue="null" />
+			<column name="uuid" type="varchar(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+		</createTable>
 
         <addForeignKeyConstraint baseTableName="fhir_task_output" baseColumnNames="creator"
                                  constraintName="fhir_task_output_creator_fk"
@@ -333,7 +330,7 @@
             <column name="value_text" type="varchar(255)"/>
             <column name="value_reference_id" type="int"/>
             <column name="description" type="varchar(255)"/>
-            <column name="creator" type="int">
+			<column name="creator" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="date_created" type="datetime">

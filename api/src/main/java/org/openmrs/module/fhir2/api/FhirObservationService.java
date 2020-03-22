@@ -29,4 +29,6 @@ public interface FhirObservationService extends FhirService<Observation> {
 	        ReferenceParam hasMemberReference, TokenAndListParam valueConcept, DateRangeParam valueDateParam,
 	        QuantityAndListParam valueQuantityParam, StringAndListParam valueStringParam, DateRangeParam date,
 	        TokenAndListParam code, TokenAndListParam category, SortSpec sort);
+
+	Observation saveObservation(Observation observation);
 }

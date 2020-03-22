@@ -33,15 +33,16 @@ public class FhirReference extends BaseOpenmrsMetadata {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "reference_id")
 	private Integer id;
 	
+	@EqualsAndHashCode.Include
 	@Column(name = "target_type")
 	private String type;
 	
+	@EqualsAndHashCode.Include
 	@Column(name = "reference")
 	private String reference;
 	
