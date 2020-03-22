@@ -33,8 +33,8 @@ import org.openmrs.module.fhir2.util.FhirServerUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component
-@Qualifier("fhirResources")
+//@Component
+//@Qualifier("fhirResources")
 @Setter(AccessLevel.PACKAGE)
 public class ConditionFhirResourceProvider implements IResourceProvider {
 	
@@ -64,7 +64,7 @@ public class ConditionFhirResourceProvider implements IResourceProvider {
 		}
 		return condition.getContained();
 	}
-	
+
 	@Create
 	@SuppressWarnings("unused")
 	public MethodOutcome createCondition(@ResourceParam Condition newCondition) {
