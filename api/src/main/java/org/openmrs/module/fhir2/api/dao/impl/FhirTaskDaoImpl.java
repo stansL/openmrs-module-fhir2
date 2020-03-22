@@ -10,6 +10,7 @@
 package org.openmrs.module.fhir2.api.dao.impl;
 
 import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Restrictions.like;
 
 import javax.validation.constraints.NotNull;
 
@@ -63,7 +64,7 @@ public class FhirTaskDaoImpl extends BaseDaoImpl implements FhirTaskDao {
 	public Collection<FhirTask> getTasksByBasedOnUuid(Class<? extends DomainResource> clazz, String uuid) {
 		return (Collection<FhirTask>) sessionFactory.getCurrentSession().createCriteria(FhirTask.class)
 		        .createAlias("basedOnReferences", "bo").add(eq("bo.type", clazz.getAnnotation(ResourceDef.class).name()))
-		        .add(eq("bo.reference", uuid)).list();
+		        .add(like("bo.reference", "%" + uuid)).list();
 	}
 	
 	@Override
@@ -73,17 +74,16 @@ public class FhirTaskDaoImpl extends BaseDaoImpl implements FhirTaskDao {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(FhirTask.class);
 		
 		// TODO: Refactor with BaseDaoImpl search support
-		// TODO: Handle optional params
+		// TODO: Handle option al params
 		// Task.basedOn
 		if (validReferenceParam(basedOnReference)) {
-			criteria.createAlias("basedOnReferences", "bo")
-			        .add(Restrictions.eq("bo.reference", basedOnReference.getIdPart()))
+			criteria.createAlias("basedOnReferences", "bo").add(Restrictions.eq("bo.reference", basedOnReference.getValue()))
 			        .add(Restrictions.eq("bo.type", basedOnReference.getResourceType()));
 		}
 		
 		// Task.owner
 		if (validReferenceParam(ownerReference)) {
-			criteria.createAlias("ownerReference", "o").add(Restrictions.eq("o.reference", ownerReference.getIdPart()))
+			criteria.createAlias("ownerReference", "o").add(Restrictions.eq("o.reference", ownerReference.getValue()))
 			        .add(Restrictions.eq("o.type", ownerReference.getResourceType()));
 		}
 		

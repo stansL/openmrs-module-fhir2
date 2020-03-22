@@ -17,7 +17,7 @@ public class FhirConstants {
 	
 	public static final String OPENMRS_FHIR_SERVER_NAME = "OpenMRS FHIR Server";
 	
-	public static final String OPENMRS_URI = "http://openmrs.org";
+	public static final String OPENMRS_URI = "http://isanteplus.org";
 	
 	public static final String HL7_FHIR_VALUE_SET_PREFIX = "http://hl7.org/fhir/ValueSet";
 	
@@ -132,5 +132,7 @@ public class FhirConstants {
 	public static final String AUTHOR = "author";
 	
 	public static final String AUT = "AUT";
+	
+	public static final String OPENMRS_FHIR_EXT_TASK_IDENTIFIER = OPENMRS_URI + "/ext/task/" + IDENTIFIER;
 	
 }

@@ -40,11 +40,9 @@ import org.hl7.fhir.r4.model.Resource;
 import org.openmrs.module.fhir2.api.FhirConditionService;
 import org.openmrs.module.fhir2.util.FhirServerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
-@Component
-@Qualifier("fhirResources")
+//@Component
+//@Qualifier("fhirResources")
 @Setter(AccessLevel.PACKAGE)
 public class ConditionFhirResourceProvider implements IResourceProvider {
 	
