@@ -109,7 +109,7 @@
 				<constraints nullable="false"/>
 			</column>
 			<column name="status_reason" type="varchar(255)" />
-			<column name="description" type="text" />
+			<column name="description" type="varchar(255)" />
 			<column name="uuid" type="char(38)">
 				<constraints nullable="false" unique="true"/>
 			</column>
@@ -168,6 +168,7 @@
 			<column name="reference" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
+			<column name="description" type="varchar(255)" />
 			<column name="creator" type="int">
 				<constraints nullable="false" />
 			</column>
@@ -263,6 +264,7 @@
 			<column name="value_numeric" type="double"/>
 			<column name="value_text" type="varchar(255)"/>
 			<column name="value_reference_id" type="int"/>
+			<column name="description" type="varchar(255)" />
 			<column name="creator" type="int">
 				<constraints nullable="false" />
 			</column>
@@ -326,6 +328,7 @@
 			<column name="value_numeric" type="double"/>
 			<column name="value_text" type="varchar(255)"/>
 			<column name="value_reference_id" type="int"/>
+			<column name="description" type="varchar(255)" />
 			<column name="creator" type="int">
 				<constraints nullable="false" />
 			</column>
@@ -370,4 +373,5 @@
 								 referencedTableName="fhir_task"
 								 referencedColumnNames="task_id"/>
 	</changeSet>
+
 </databaseChangeLog>

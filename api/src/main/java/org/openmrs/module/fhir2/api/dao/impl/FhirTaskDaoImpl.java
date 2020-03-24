@@ -46,7 +46,7 @@ public class FhirTaskDaoImpl extends BaseDaoImpl implements FhirTaskDao {
 	public FhirTask saveTask(FhirTask task) throws DAOException {
 		
 		// TODO: Refactor - and figure out why CascadeType.ALL does not take care of this.
-		if (task.getOwnerReference() != null) {
+		if (task.getOwnerReference() != null && task.getOwnerReference().getReference() != null) {
 			sessionFactory.getCurrentSession().saveOrUpdate(task.getOwnerReference());
 		}
 		
@@ -75,7 +75,7 @@ public class FhirTaskDaoImpl extends BaseDaoImpl implements FhirTaskDao {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(FhirTask.class);
 		
 		// TODO: Refactor with BaseDaoImpl search support
-		// TODO: Handle optional params
+		// TODO: Handle option al params
 		// Task.basedOn
 		if (validReferenceParam(basedOnReference)) {
 			criteria.createAlias("basedOnReferences", "bo")
