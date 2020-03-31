@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "fhir_task_input")
+@Table(name = "fhir_task_output")
 public class FhirTaskOutput extends FhirTaskParam {
 	
 	private static final long serialVersionUID = 1L;
