@@ -232,16 +232,27 @@ public class FhirTaskTranslatorImplTest {
 		assertThat(result, notNullValue());
 		assertThat(result.getStatus(), equalTo(FHIR_TASK_STATUS));
 	}
-	
+
 	@Test
 	public void toOpenmrsType_shouldTranslateStatus() {
 		Task task = new Task();
 		task.setStatus(FHIR_TASK_STATUS);
-		
+
 		FhirTask result = taskTranslator.toOpenmrsType(task);
-		
+
 		assertThat(result, notNullValue());
 		assertThat(result.getStatus(), equalTo(OPENMRS_TASK_STATUS));
+	}
+
+	@Test
+	public void toOpenmrsType_shouldTranslateUnsupportedStatusToUnknown() {
+		Task task = new Task();
+		task.setStatus(Task.TaskStatus.ENTEREDINERROR);
+
+		FhirTask result = taskTranslator.toOpenmrsType(task);
+
+		assertThat(result, notNullValue());
+		assertThat(result.getStatus(), equalTo(FhirTask.TaskStatus.UNKNOWN));
 	}
 	
 	@Test
@@ -281,7 +292,20 @@ public class FhirTaskTranslatorImplTest {
 		assertThat(result, notNullValue());
 		assertThat(result.getIntent(), equalTo(OPENMRS_TASK_INTENT));
 	}
-	
+
+
+	@Test
+	public void toOpenmrsType_shouldTranslateUnsupportedIntent() {
+		Task task = new Task();
+		task.setIntent(Task.TaskIntent.PLAN);
+
+		FhirTask result = taskTranslator.toOpenmrsType(task);
+
+		assertThat(result, notNullValue());
+		assertThat(result.getIntent(), equalTo(FhirTask.TaskIntent.ORDER));
+	}
+
+
 	@Test
 	public void toOpenmrsType_shouldUpdateIntentOnExistingTask() {
 		FhirTask task = new FhirTask();
