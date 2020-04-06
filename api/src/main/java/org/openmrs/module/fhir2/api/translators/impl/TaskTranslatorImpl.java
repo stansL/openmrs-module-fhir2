@@ -11,11 +11,13 @@ package org.openmrs.module.fhir2.api.translators.impl;
 
 import javax.inject.Inject;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
@@ -123,6 +125,9 @@ public class TaskTranslatorImpl implements TaskTranslator {
 		
 		fhirTask.setLastModified(openmrsTask.getDateChanged());
 		
+		fhirTask.setIdentifier(Collections.singletonList(
+		    new Identifier().setSystem(FhirConstants.OPENMRS_URI + "/identifier").setValue(openmrsTask.getUuid())));
+		
 		fhirTask.getMeta().setLastUpdated(openmrsTask.getDateChanged());
 	}
 	
@@ -133,14 +138,16 @@ public class TaskTranslatorImpl implements TaskTranslator {
 		if (fhirTask.hasStatus()) {
 			try {
 				openmrsTask.setStatus(FhirTask.TaskStatus.valueOf(fhirTask.getStatus().name()));
-			} catch (IllegalArgumentException ex) {
+			}
+			catch (IllegalArgumentException ex) {
 				openmrsTask.setStatus(FhirTask.TaskStatus.UNKNOWN);
 			}
 		}
 		if (fhirTask.hasIntent()) {
 			try {
 				openmrsTask.setIntent(FhirTask.TaskIntent.valueOf(fhirTask.getIntent().name()));
-			} catch (IllegalArgumentException ex) {
+			}
+			catch (IllegalArgumentException ex) {
 				openmrsTask.setIntent(FhirTask.TaskIntent.ORDER);
 			}
 		}
