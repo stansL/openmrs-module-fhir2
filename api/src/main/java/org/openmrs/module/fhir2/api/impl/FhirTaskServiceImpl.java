@@ -26,7 +26,6 @@ import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.Task;
-import org.openmrs.module.fhir2.FhirConstants;
 import org.openmrs.module.fhir2.FhirTask;
 import org.openmrs.module.fhir2.api.FhirTaskService;
 import org.openmrs.module.fhir2.api.dao.FhirTaskDao;
@@ -130,25 +129,27 @@ public class FhirTaskServiceImpl implements FhirTaskService {
 	}
 	
 	private String handleIdentifier(Task task, String uuid) {
-		String openmrs_id = task.getId();
+		String openmrsUuid = task.getId();
 		
-		if (task.hasIdentifier() && (task.getIdentifier().stream()
-		        .anyMatch(id -> (id.getSystem() == FhirConstants.OPENMRS_URI + "/identifier")))) {
-			Collection<Identifier> i = task.getIdentifier().stream()
-			        .filter(id -> (id.getSystem() == FhirConstants.OPENMRS_URI + "/identifier"))
-			        .collect(Collectors.toList());
-			openmrs_id = i.iterator().next().getValue();
-			task.setId(openmrs_id);
+		if (task.hasIdentifier()) {
+			Identifier openmrsIdentifier = task.getIdentifier().stream().filter(i -> i.getSystem().contains("openmrs"))
+			        .findFirst().orElse(null);
+			if (openmrsIdentifier != null) {
+				openmrsUuid = openmrsIdentifier.getValue();
+				uuid = openmrsUuid;
+			}
+			
+			task.setId(openmrsUuid);
 		}
 		
-		if (openmrs_id == null) {
+		if (openmrsUuid == null) {
 			throw new InvalidRequestException("Task resource is missing id.");
 		}
 		
-		if (openmrs_id != uuid) {
+		if (openmrsUuid != uuid) {
 			throw new InvalidRequestException("Task id and provided uuid do not match");
 		}
 		
-		return openmrs_id;
+		return openmrsUuid;
 	}
 }
