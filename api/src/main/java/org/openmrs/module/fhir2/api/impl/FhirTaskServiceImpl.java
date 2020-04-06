@@ -23,8 +23,10 @@ import ca.uhn.fhir.rest.server.exceptions.MethodNotAllowedException;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.Task;
+import org.openmrs.module.fhir2.FhirConstants;
 import org.openmrs.module.fhir2.FhirTask;
 import org.openmrs.module.fhir2.api.FhirTaskService;
 import org.openmrs.module.fhir2.api.dao.FhirTaskDao;
@@ -75,13 +77,7 @@ public class FhirTaskServiceImpl implements FhirTaskService {
 	 */
 	@Override
 	public Task updateTask(String uuid, Task task) {
-		if (task.getId() == null) {
-			throw new InvalidRequestException("Task resource is missing id.");
-		}
-		
-		if (task.getId() != uuid) {
-			throw new InvalidRequestException("Task id and provided uuid do not match");
-		}
+		uuid = handleIdentifier(task, uuid);
 		
 		FhirTask openmrsTask = null;
 		
@@ -131,5 +127,28 @@ public class FhirTaskServiceImpl implements FhirTaskService {
 	        TokenOrListParam status, SortSpec sort) {
 		return dao.searchForTasks(basedOnReference, ownerReference, status, sort).stream().map(translator::toFhirResource)
 		        .collect(Collectors.toList());
+	}
+	
+	private String handleIdentifier(Task task, String uuid) {
+		String openmrs_id = task.getId();
+		
+		if (task.hasIdentifier() && (task.getIdentifier().stream()
+		        .anyMatch(id -> (id.getSystem() == FhirConstants.OPENMRS_URI + "/identifier")))) {
+			Collection<Identifier> i = task.getIdentifier().stream()
+			        .filter(id -> (id.getSystem() == FhirConstants.OPENMRS_URI + "/identifier"))
+			        .collect(Collectors.toList());
+			openmrs_id = i.iterator().next().getValue();
+			task.setId(openmrs_id);
+		}
+		
+		if (openmrs_id == null) {
+			throw new InvalidRequestException("Task resource is missing id.");
+		}
+		
+		if (openmrs_id != uuid) {
+			throw new InvalidRequestException("Task id and provided uuid do not match");
+		}
+		
+		return openmrs_id;
 	}
 }

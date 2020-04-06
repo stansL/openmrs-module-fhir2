@@ -26,6 +26,7 @@ import java.util.Collections;
 
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.MethodNotAllowedException;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.Task;
@@ -34,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.openmrs.module.fhir2.FhirConstants;
 import org.openmrs.module.fhir2.FhirTask;
 import org.openmrs.module.fhir2.api.dao.FhirTaskDao;
 import org.openmrs.module.fhir2.api.translators.TaskTranslator;
@@ -140,6 +142,38 @@ public class FhirTaskServiceImplTest {
 		
 		assertThat(result, notNullValue());
 		assertThat(result, equalTo(fhirTask));
+	}
+	
+	@Test
+	public void updateTask_shouldUseIdentifierIfExists() {
+		org.hl7.fhir.r4.model.Task fhirTask = new org.hl7.fhir.r4.model.Task();
+		FhirTask openmrsTask = new FhirTask();
+		FhirTask updatedOpenmrsTask = new FhirTask();
+		
+		fhirTask.setId(WRONG_TASK_UUID);
+		fhirTask.setStatus(FHIR_NEW_TASK_STATUS);
+		fhirTask.setIdentifier(Collections
+		        .singletonList(new Identifier().setValue(TASK_UUID).setSystem(FhirConstants.OPENMRS_URI + "/identifier")));
+		
+		openmrsTask.setUuid(TASK_UUID);
+		openmrsTask.setStatus(OPENMRS_TASK_STATUS);
+		openmrsTask.setIntent(OPENMRS_TASK_INTENT);
+		
+		updatedOpenmrsTask.setUuid(TASK_UUID);
+		updatedOpenmrsTask.setStatus(OPENMRS_NEW_TASK_STATUS);
+		openmrsTask.setIntent(OPENMRS_TASK_INTENT);
+		
+		when(translator.toOpenmrsType(openmrsTask, fhirTask)).thenReturn(updatedOpenmrsTask);
+		when(dao.saveTask(updatedOpenmrsTask)).thenReturn(updatedOpenmrsTask);
+		when(dao.getTaskByUuid(TASK_UUID)).thenReturn(openmrsTask);
+		when(translator.toFhirResource(updatedOpenmrsTask)).thenReturn(fhirTask);
+		
+		org.hl7.fhir.r4.model.Task result = fhirTaskService.updateTask(fhirTask.getIdentifier().iterator().next().getValue(),
+		    fhirTask);
+		
+		assertThat(result, notNullValue());
+		assertThat(result.getStatus(), equalTo(FHIR_NEW_TASK_STATUS));
+		assertThat(result.getId(), equalTo(TASK_UUID));
 	}
 	
 	@Test(expected = InvalidRequestException.class)
