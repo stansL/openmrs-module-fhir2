@@ -31,4 +31,6 @@ public interface FhirObservationDao {
 	        QuantityAndListParam valueQuantityParam, StringAndListParam valueStringParam, DateRangeParam date,
 	        
 	        TokenAndListParam code, SortSpec sort);
+	
+	Obs saveObs(Obs newObs);
 }

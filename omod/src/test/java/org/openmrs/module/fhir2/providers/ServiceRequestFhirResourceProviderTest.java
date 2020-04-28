@@ -16,7 +16,11 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.junit.Before;
@@ -78,4 +82,20 @@ public class ServiceRequestFhirResourceProviderTest {
 		assertThat(resourceProvider.getServiceRequestById(idType).isResource(), is(true));
 		assertThat(resourceProvider.getServiceRequestById(idType), nullValue());
 	}
+	
+	@Test
+	public void searchServiceRequestsWithNoParams_shouldReturnAllServiceRequests() {
+		List<ServiceRequest> serviceRequests = new ArrayList<>();
+		serviceRequests.add(serviceRequest);
+		when(serviceRequestService.searchForServiceRequests()).thenReturn(serviceRequests);
+		
+		Bundle results = resourceProvider.searchServiceRequests();
+		
+		assertThat(results, notNullValue());
+		assertThat(results.getTotal(), equalTo(1));
+		assertThat(results.getEntry(), notNullValue());
+		assertThat(results.getEntry().get(0).getResource().fhirType(), equalTo("ServiceRequest"));
+		assertThat(results.getEntry().get(0).getResource().getId(), equalTo(SERVICE_REQUEST_UUID));
+	}
+	
 }

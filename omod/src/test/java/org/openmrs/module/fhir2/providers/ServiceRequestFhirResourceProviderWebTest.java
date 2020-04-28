@@ -10,11 +10,18 @@
 package org.openmrs.module.fhir2.providers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Collections;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,10 +66,34 @@ public class ServiceRequestFhirResourceProviderWebTest extends BaseFhirResourceP
 	}
 	
 	@Test
-	public void getEncounterByWrongUuid_shouldReturn404() throws Exception {
+	public void getServiceRequestByWrongUuid_shouldReturn404() throws Exception {
 		MockHttpServletResponse response = get("/ServiceRequest/" + WRONG_SERVICE_REQUEST_UUID).accept(FhirMediaTypes.JSON)
 		        .go();
 		
 		assertThat(response, isNotFound());
+	}
+	
+	@Test
+	public void shouldGetAllServiceRequests() throws Exception {
+		verifyUri("/ServiceRequest");
+		
+		verify(service).searchForServiceRequests();
+	}
+	
+	private void verifyUri(String uri) throws Exception {
+		ServiceRequest serviceRequest = new ServiceRequest();
+		serviceRequest.setId(SERVICE_REQUEST_UUID);
+		when(service.searchForServiceRequests()).thenReturn(Collections.singletonList(serviceRequest));
+		
+		MockHttpServletResponse response = get(uri).accept(FhirMediaTypes.JSON).go();
+		
+		assertThat(response, isOk());
+		assertThat(response.getContentType(), equalTo(FhirMediaTypes.JSON.toString()));
+		
+		Bundle results = readBundleResponse(response);
+		assertThat(results.getEntry(), notNullValue());
+		assertThat(results.getEntry(), not(empty()));
+		assertThat(results.getEntry().get(0).getResource(), notNullValue());
+		assertThat(results.getEntry().get(0).getResource().getIdElement().getIdPart(), equalTo(SERVICE_REQUEST_UUID));
 	}
 }

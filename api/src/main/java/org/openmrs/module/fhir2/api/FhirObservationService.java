@@ -30,4 +30,6 @@ public interface FhirObservationService {
 	        ReferenceAndListParam patientReference, ReferenceParam hasMemberReference, TokenAndListParam valueConcept,
 	        DateRangeParam valueDateParam, QuantityAndListParam valueQuantityParam, StringAndListParam valueStringParam,
 	        DateRangeParam date, TokenAndListParam code, SortSpec sort);
+	
+	Observation saveObservation(Observation observation);
 }

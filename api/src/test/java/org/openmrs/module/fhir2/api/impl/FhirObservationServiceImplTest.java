@@ -86,4 +86,23 @@ public class FhirObservationServiceImplTest {
 		assertThat(results, not(empty()));
 		assertThat(results, hasItem(hasProperty("id", equalTo(OBS_UUID))));
 	}
+	
+	@Test
+	public void saveObservation_shouldSaveNewObservation() {
+		Observation observation = new Observation();
+		observation.setId(OBS_UUID);
+		
+		Obs obs = new Obs();
+		obs.setUuid(OBS_UUID);
+		
+		when(observationTranslator.toOpenmrsType(observation)).thenReturn(obs);
+		when(dao.saveObs(obs)).thenReturn(obs);
+		when(observationTranslator.toFhirResource(obs)).thenReturn(observation);
+		
+		Observation result = fhirObservationService.saveObservation(observation);
+		
+		assertThat(result, notNullValue());
+		assertThat(result, equalTo(observation));
+	}
+	
 }

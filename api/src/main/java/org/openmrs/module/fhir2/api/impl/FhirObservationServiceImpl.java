@@ -57,4 +57,30 @@ public class FhirObservationServiceImpl implements FhirObservationService {
 		            valueDateParam, valueQuantityParam, valueStringParam, date, code, sort)
 		        .stream().map(observationTranslator::toFhirResource).collect(Collectors.toList());
 	}
+	
+	@Override
+	public Observation saveObservation(Observation observation) {
+		return observationTranslator.toFhirResource(dao.saveObs(observationTranslator.toOpenmrsType(observation)));
+	}
+	
+	//	@Override
+	//	public Observation updateObservation(String uuid, Observation observation) {
+	//		if (observation.getId() == null) {
+	//			throw new InvalidRequestException("Observation resource is missing id.");
+	//		}
+	//
+	//		Obs obsGroup = new Obs();
+	//
+	//		if (uuid != null) {
+	//			obsGroup = dao.getObsGroupByUuid(uuid);
+	//		}
+	//
+	//		if (obsGroup == null) {
+	//			throw new MethodNotAllowedException("No Diagnostic Report found to update.");
+	//		}
+	//
+	//		return translator.toFhirResource(dao.saveObsGroup(translator.toOpenmrsType(obsGroup, diagnosticReport)));
+	//		return null;
+	//	}
+	
 }

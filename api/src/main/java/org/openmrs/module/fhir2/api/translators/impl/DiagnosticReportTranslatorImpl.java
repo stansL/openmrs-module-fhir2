@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.fhir2.api.translators.impl;
 
+import java.util.Date;
+
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.hl7.fhir.r4.model.DiagnosticReport;
@@ -141,7 +143,7 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 	private void setOpenmrsFields(DiagnosticReport diagnosticReport, Obs translatedObs) {
 		
 		// DiagnosticReport.id
-		if (translatedObs.getUuid() != null) {
+		if (diagnosticReport.hasId()) {
 			translatedObs.setUuid(diagnosticReport.getId());
 		}
 		
@@ -173,5 +175,8 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 		// TODO: distinguish between DianosticReport and Observation mapping for a given Obs
 		translatedObs.setComment("mapped DiagnosticReport");
 		
+		// Missing Obs_Datetime
+		// TODO: handle like Observation Translator
+		translatedObs.setObsDatetime(new Date());
 	}
 }

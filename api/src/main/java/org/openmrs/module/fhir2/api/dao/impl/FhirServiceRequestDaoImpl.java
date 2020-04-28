@@ -9,8 +9,11 @@
  */
 package org.openmrs.module.fhir2.api.dao.impl;
 
+import java.util.Collection;
+
 import lombok.AccessLevel;
 import lombok.Setter;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.TestOrder;
@@ -31,5 +34,12 @@ public class FhirServiceRequestDaoImpl implements FhirServiceRequestDao<TestOrde
 	public TestOrder getServiceRequestByUuid(String uuid) {
 		return (TestOrder) sessionFactory.getCurrentSession().createCriteria(TestOrder.class)
 		        .add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	}
+	
+	@Override
+	public Collection<TestOrder> searchForTestOrders() {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(TestOrder.class);
+		
+		return criteria.list();
 	}
 }

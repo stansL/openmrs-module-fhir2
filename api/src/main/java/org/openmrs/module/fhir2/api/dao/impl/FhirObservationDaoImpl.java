@@ -69,6 +69,13 @@ public class FhirObservationDaoImpl extends BaseDaoImpl implements FhirObservati
 		return criteria.list();
 	}
 	
+	@Override
+	public Obs saveObs(Obs obs) {
+		sessionFactory.getCurrentSession().saveOrUpdate(obs);
+		
+		return obs;
+	}
+	
 	protected void handleHasMemberReference(Criteria criteria, ReferenceParam hasMemberReference) {
 		if (hasMemberReference != null) {
 			criteria.createAlias("groupMembers", "gm");

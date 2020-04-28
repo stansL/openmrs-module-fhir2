@@ -11,7 +11,11 @@ package org.openmrs.module.fhir2.api.dao;
 
 import javax.validation.constraints.NotNull;
 
+import java.util.Collection;
+
 public interface FhirServiceRequestDao<T> {
 	
 	T getServiceRequestByUuid(@NotNull String uuid);
+	
+	Collection<T> searchForTestOrders();
 }

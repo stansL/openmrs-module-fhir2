@@ -10,17 +10,25 @@
 package org.openmrs.module.fhir2.api.dao.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.util.Collection;
 
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.openmrs.OrderType;
 import org.openmrs.TestOrder;
 import org.openmrs.module.fhir2.TestFhirSpringConfiguration;
+import org.openmrs.module.fhir2.api.translators.ServiceRequestTranslator;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,12 +51,16 @@ public class FhirServiceRequestDaoImplTest extends BaseModuleContextSensitiveTes
 	@Qualifier("sessionFactory")
 	private SessionFactory sessionFactory;
 	
+	@Mock
+	ServiceRequestTranslator serviceRequestTranslator;
+	
 	@Before
 	public void setup() throws Exception {
 		executeDataSet(TEST_ORDER_INITIAL_DATA);
 		
 		dao = new FhirServiceRequestDaoImpl();
 		dao.setSessionFactory(sessionFactory);
+		
 	}
 	
 	@Test
@@ -71,5 +83,15 @@ public class FhirServiceRequestDaoImplTest extends BaseModuleContextSensitiveTes
 	public void shouldReturnNullIfUuidIsNotValidTestOrder() {
 		TestOrder result = dao.getServiceRequestByUuid(OTHER_ORDER_UUID);
 		assertThat(result, nullValue());
+	}
+	
+	@Test
+	public void searchForTestOrders_shouldReturnTestOrders() {
+		Collection<TestOrder> results = dao.searchForTestOrders();
+		
+		assertThat(results, notNullValue());
+		assertThat(results, not(empty()));
+		assertThat(results, hasItem(hasProperty("uuid", equalTo(TEST_ORDER_UUID))));
+		assertThat(results, not(hasItem(hasProperty("uuid", equalTo(OTHER_ORDER_UUID)))));
 	}
 }
