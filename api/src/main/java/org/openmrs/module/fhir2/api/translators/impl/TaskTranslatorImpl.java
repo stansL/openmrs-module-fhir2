@@ -20,6 +20,7 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.fhir2.FhirConstants;
 import org.openmrs.module.fhir2.FhirReference;
 import org.openmrs.module.fhir2.FhirTask;
@@ -44,6 +45,9 @@ public class TaskTranslatorImpl implements TaskTranslator {
 	
 	@Autowired
 	private ConceptTranslator conceptTranslator;
+	
+	@Autowired
+	private ConceptService conceptService;
 	
 	@Override
 	public Task toFhirResource(FhirTask openmrsTask) {
@@ -186,11 +190,15 @@ public class TaskTranslatorImpl implements TaskTranslator {
 	
 	private FhirTaskOutput translateToOutputReference(Task.TaskOutputComponent taskOutputComponent) {
 		FhirReference outputReference = referenceTranslator.toOpenmrsType((Reference) taskOutputComponent.getValue());
-		Concept type = conceptTranslator.toOpenmrsType(taskOutputComponent.getType());
+		Concept type = null;
 		FhirTaskOutput output = new FhirTaskOutput();
 		
+		if (taskOutputComponent.hasType()) {
+			type = conceptTranslator.toOpenmrsType(taskOutputComponent.getType());
+			output.setType(type);
+		}
+		
 		output.setValueReference(outputReference);
-		output.setType(type);
 		
 		output.setName("TaskOutputComponent/" + output.getUuid());
 		

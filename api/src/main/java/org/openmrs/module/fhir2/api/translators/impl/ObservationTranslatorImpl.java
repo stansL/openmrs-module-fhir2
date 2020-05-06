@@ -168,6 +168,10 @@ public class ObservationTranslatorImpl implements ObservationTranslator {
 			obs.setConcept(conceptTranslator.toOpenmrsType(observation.getCode()));
 		}
 		
+		if (observation.hasValue()) {
+			obs = observationValueTranslator.toOpenmrsType(obs, observation.getValue());
+		}
+		
 		for (Reference reference : observation.getHasMember()) {
 			obs.addGroupMember(observationReferenceTranslator.toOpenmrsType(reference));
 		}

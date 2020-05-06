@@ -40,7 +40,9 @@ public class FhirDiagnosticReportServiceImpl implements FhirDiagnosticReportServ
 	
 	@Override
 	public DiagnosticReport saveDiagnosticReport(DiagnosticReport diagnosticReport) {
-		return translator.toFhirResource(dao.saveObsGroup(translator.toOpenmrsType(diagnosticReport)));
+		Obs obsGroup = translator.toOpenmrsType(diagnosticReport);
+		obsGroup = dao.saveObsGroup(obsGroup);
+		return translator.toFhirResource(obsGroup);
 	}
 	
 	@Override

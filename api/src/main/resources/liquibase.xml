@@ -260,9 +260,7 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="task_id" type="int"/>
-            <column name="type_id" type="int">
-                <constraints nullable="false"/>
-            </column>
+            <column name="type_id" type="int"/>
             <column name="value_datetime" type="datetime"/>
             <column name="value_numeric" type="double"/>
             <column name="value_text" type="varchar(255)"/>

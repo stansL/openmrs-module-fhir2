@@ -50,9 +50,9 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 		if (obsGroup == null)
 			return null;
 		
-		if (!obsGroup.isObsGrouping()) {
-			throw new IllegalArgumentException("Obs object must be an Obs group.");
-		}
+		//		if (!obsGroup.isObsGrouping()) {
+		//			throw new IllegalArgumentException("Obs object must be an Obs group.");
+		//		}
 		
 		DiagnosticReport diagnosticReport = new DiagnosticReport();
 		
@@ -69,9 +69,9 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 			return null;
 		}
 		
-		if (!diagnosticReport.hasResult()) {
-			throw new IllegalArgumentException("Diagnostic Report must have at least one result");
-		}
+		//		if (!diagnosticReport.hasResult()) {
+		//			throw new IllegalArgumentException("Diagnostic Report must have at least one result");
+		//		}
 		
 		Obs translatedObs = new Obs();
 		
@@ -90,10 +90,10 @@ public class DiagnosticReportTranslatorImpl implements DiagnosticReportTranslato
 			return existingObs;
 		}
 		
-		if (!diagnosticReport.hasResult()) {
-			throw new IllegalArgumentException("Diagnostic Report must have at least one result");
-		}
-		
+		//		if (!diagnosticReport.hasResult()) {
+		//			throw new IllegalArgumentException("Diagnostic Report must have at least one result");
+		//		}
+		//
 		setOpenmrsFields(diagnosticReport, existingObs);
 		
 		return existingObs;

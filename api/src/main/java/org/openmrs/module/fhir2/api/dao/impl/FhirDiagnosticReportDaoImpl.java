@@ -37,9 +37,9 @@ public class FhirDiagnosticReportDaoImpl implements FhirDiagnosticReportDao {
 	
 	@Override
 	public Obs saveObsGroup(Obs obs) throws DAOException {
-		if (!obs.isObsGrouping()) {
-			throw new IllegalArgumentException("Provided Obs must be an Obs grouping.");
-		}
+		//		if (!obs.isObsGrouping()) {
+		//			throw new IllegalArgumentException("Provided Obs must be an Obs grouping.");
+		//		}
 		
 		sessionFactory.getCurrentSession().saveOrUpdate(obs);
 		
