@@ -10,6 +10,8 @@
 package org.openmrs.module.fhir2.api.translators.impl;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
@@ -22,6 +24,7 @@ import org.hl7.fhir.r4.model.Task;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.fhir2.FhirConstants;
+import org.openmrs.module.fhir2.FhirException;
 import org.openmrs.module.fhir2.FhirReference;
 import org.openmrs.module.fhir2.FhirTask;
 import org.openmrs.module.fhir2.FhirTaskInput;
@@ -156,8 +159,18 @@ public class TaskTranslatorImpl implements TaskTranslator {
 		}
 		
 		if (!fhirTask.getBasedOn().isEmpty()) {
-			openmrsTask.setBasedOnReferences(
-			    fhirTask.getBasedOn().stream().map(referenceTranslator::toOpenmrsType).collect(Collectors.toSet()));
+			Set<FhirReference> basedOnReferences = fhirTask.getBasedOn().stream().map(referenceTranslator::toOpenmrsType)
+			        .collect(Collectors.toSet());
+			Set<FhirReference> tryTwoRef = new HashSet<>();
+			for (Reference ref : fhirTask.getBasedOn()) {
+				tryTwoRef.add(referenceTranslator.toOpenmrsType(ref));
+			}
+			
+			openmrsTask.setBasedOnReferences(tryTwoRef);
+			
+			if (openmrsTask.getBasedOnReferences().size() != fhirTask.getBasedOn().size()) {
+				throw new FhirException("Could not save all references for task " + openmrsTask.getUuid());
+			}
 		}
 		
 		if (!fhirTask.getEncounter().isEmpty()) {
