@@ -29,27 +29,27 @@ import org.springframework.stereotype.Component;
 @Component
 @Setter(AccessLevel.PACKAGE)
 public class FhirDiagnosticReportDaoImpl extends BaseFhirDao<Obs> implements FhirDiagnosticReportDao {
-
+	
 	@Override
 	public Obs createOrUpdate(Obs newObs) throws DAOException {
 		return super.createOrUpdate(newObs);
 	}
-
+	
 	@Override
 	public Collection<Obs> searchForDiagnosticReports(ReferenceAndListParam encounterReference,
 	        ReferenceAndListParam patientReference, DateRangeParam issueDate, TokenAndListParam code, SortSpec sort) {
-
+		
 		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(Obs.class);
-
+		
 		handleEncounterReference("e", encounterReference).ifPresent(c -> criteria.createAlias("encounter", "e").add(c));
 		handlePatientReference(criteria, patientReference, "person");
 		handleCodedConcept(criteria, code);
 		handleDateRange("dateCreated", issueDate).ifPresent(criteria::add);
 		handleSort(criteria, sort);
-
+		
 		return criteria.list();
 	}
-
+	
 	private void handleCodedConcept(Criteria criteria, TokenAndListParam code) {
 		if (code != null) {
 			if (!containsAlias(criteria, "c")) {
@@ -58,7 +58,7 @@ public class FhirDiagnosticReportDaoImpl extends BaseFhirDao<Obs> implements Fhi
 			handleCodeableConcept(criteria, code, "c", "cm", "crt").ifPresent(criteria::add);
 		}
 	}
-
+	
 	@Override
 	protected String paramToProp(@NotNull String paramName) {
 		switch (paramName) {

@@ -12,5 +12,5 @@ package org.openmrs.module.fhir2.api.dao;
 import org.openmrs.Obs;
 
 public interface FhirObservationDao extends FhirDao<Obs> {
-
+	
 }

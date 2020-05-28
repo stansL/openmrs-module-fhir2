@@ -53,6 +53,6 @@ public interface ObservationTranslator extends ToFhirTranslator<Obs, Observation
 	 * @return an updated version of the current obs
 	 */
 	Obs toOpenmrsType(Obs existingObs, Observation observation, Supplier<Obs> groupedObsFactory);
-
+	
 	Obs toOpenmrsType(Observation observation);
 }

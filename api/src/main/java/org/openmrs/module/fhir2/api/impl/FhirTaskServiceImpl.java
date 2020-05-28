@@ -38,7 +38,7 @@ public class FhirTaskServiceImpl extends BaseFhirService<Task, FhirTask> impleme
 	
 	@Autowired
 	private TaskTranslator translator;
-
+	
 	/**
 	 * Get a list of Tasks that match the given search and sort criteria
 	 *

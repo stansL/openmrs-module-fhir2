@@ -10,7 +10,6 @@
 package org.openmrs.module.fhir2.api.dao.impl;
 
 import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Restrictions.like;
 
 import javax.validation.constraints.NotNull;
 
@@ -70,12 +69,12 @@ public class FhirTaskDaoImpl extends BaseFhirDao<FhirTask> implements FhirTaskDa
 		if (task.getOwnerReference() != null && task.getOwnerReference().getReference() != null) {
 			getSessionFactory().getCurrentSession().saveOrUpdate(task.getOwnerReference());
 		}
-
+		
 		getSessionFactory().getCurrentSession().saveOrUpdate(task);
-
+		
 		return task;
 	}
-
+	
 	@Override
 	protected String paramToProp(@NotNull String paramName) {
 		switch (paramName) {
@@ -89,17 +88,17 @@ public class FhirTaskDaoImpl extends BaseFhirDao<FhirTask> implements FhirTaskDa
 	private Boolean validReferenceParam(ReferenceParam ref) {
 		return (ref != null && ref.getIdPart() != null && ref.getResourceType() != null);
 	}
-
+	
 	private Optional<Criterion> handleStatus(TokenAndListParam tokenAndListParam) {
 		if (tokenAndListParam == null) {
 			return Optional.empty();
 		}
-
+		
 		return handleAndListParam(tokenAndListParam, token -> {
 			if (token.getValue() != null) {
 				return Optional.of(eq("status", FhirTask.TaskStatus.valueOf(token.getValue())));
 			}
-
+			
 			return Optional.empty();
 		});
 	}
