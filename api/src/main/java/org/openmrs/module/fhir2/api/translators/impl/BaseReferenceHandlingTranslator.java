@@ -41,46 +41,38 @@ public abstract class BaseReferenceHandlingTranslator {
 	public static final String TEST_ORDER_TYPE_UUID = "52a447d3-a64a-11e3-9aeb-50e549534c5e";
 	
 	protected Reference createEncounterReference(@NotNull Encounter encounter) {
-		if (encounter instanceof HibernateProxy) {
-			encounter = HibernateUtil.getRealObjectFromProxy(encounter);
-		}
-		
+		encounter = (Encounter) getHibernateProxyObject(encounter);
+
 		return new Reference().setReference(FhirConstants.ENCOUNTER + "/" + encounter.getUuid())
 		        .setType(FhirConstants.ENCOUNTER);
 	}
 	
 	protected Reference createMedicationReference(@NotNull Drug drug) {
-		if (drug instanceof HibernateProxy) {
-			drug = HibernateUtil.getRealObjectFromProxy(drug);
-		}
-		
+		drug = (Drug) getHibernateProxyObject(drug);
+
+
 		return new Reference().setReference(FhirConstants.MEDICATION + "/" + drug.getUuid())
 		        .setType(FhirConstants.MEDICATION);
 	}
 	
 	protected Reference createObservationReference(@NotNull Obs obs) {
-		if (obs instanceof HibernateProxy) {
-			obs = HibernateUtil.getRealObjectFromProxy(obs);
-		}
-		
+		obs = (Obs) getHibernateProxyObject(obs);
+
+
 		return new Reference().setReference(FhirConstants.OBSERVATION + "/" + obs.getUuid())
 		        .setType(FhirConstants.OBSERVATION);
 	}
 	
 	protected Reference createLocationReference(@NotNull Location location) {
-		if (location instanceof HibernateProxy) {
-			location = HibernateUtil.getRealObjectFromProxy(location);
-		}
-		
+		location = (Location) getHibernateProxyObject(location);
+
 		return new Reference().setReference(FhirConstants.LOCATION + "/" + location.getUuid())
 		        .setType(FhirConstants.LOCATION).setDisplay(location.getName());
 	}
 	
 	protected Reference createPatientReference(@NotNull Patient patient) {
-		if (patient instanceof HibernateProxy) {
-			patient = HibernateUtil.getRealObjectFromProxy(patient);
-		}
-		
+		patient = (Patient) getHibernateProxyObject(patient);
+
 		Reference reference = new Reference().setReference(FhirConstants.PATIENT + "/" + patient.getUuid())
 		        .setType(FhirConstants.PATIENT);
 		
@@ -105,7 +97,20 @@ public abstract class BaseReferenceHandlingTranslator {
 		
 		return reference;
 	}
-	
+
+	private Object getHibernateProxyObject(@NotNull Object obj) {
+		try {
+			if (obj instanceof HibernateProxy) {
+				return HibernateUtil.getRealObjectFromProxy(obj);
+			} else {
+				return obj;
+			}
+
+		} catch (Exception e) {
+			return obj;
+		}
+	}
+
 	protected Reference createPractitionerReference(@NotNull User user) {
 		if (user instanceof HibernateProxy) {
 			user = HibernateUtil.getRealObjectFromProxy(user);
