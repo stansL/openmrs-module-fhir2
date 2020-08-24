@@ -42,37 +42,35 @@ public abstract class BaseReferenceHandlingTranslator {
 	
 	protected Reference createEncounterReference(@NotNull Encounter encounter) {
 		encounter = (Encounter) getHibernateProxyObject(encounter);
-
+		
 		return new Reference().setReference(FhirConstants.ENCOUNTER + "/" + encounter.getUuid())
 		        .setType(FhirConstants.ENCOUNTER);
 	}
 	
 	protected Reference createMedicationReference(@NotNull Drug drug) {
 		drug = (Drug) getHibernateProxyObject(drug);
-
-
+		
 		return new Reference().setReference(FhirConstants.MEDICATION + "/" + drug.getUuid())
 		        .setType(FhirConstants.MEDICATION);
 	}
 	
 	protected Reference createObservationReference(@NotNull Obs obs) {
 		obs = (Obs) getHibernateProxyObject(obs);
-
-
+		
 		return new Reference().setReference(FhirConstants.OBSERVATION + "/" + obs.getUuid())
 		        .setType(FhirConstants.OBSERVATION);
 	}
 	
 	protected Reference createLocationReference(@NotNull Location location) {
 		location = (Location) getHibernateProxyObject(location);
-
+		
 		return new Reference().setReference(FhirConstants.LOCATION + "/" + location.getUuid())
 		        .setType(FhirConstants.LOCATION).setDisplay(location.getName());
 	}
 	
 	protected Reference createPatientReference(@NotNull Patient patient) {
 		patient = (Patient) getHibernateProxyObject(patient);
-
+		
 		Reference reference = new Reference().setReference(FhirConstants.PATIENT + "/" + patient.getUuid())
 		        .setType(FhirConstants.PATIENT);
 		
@@ -97,7 +95,7 @@ public abstract class BaseReferenceHandlingTranslator {
 		
 		return reference;
 	}
-
+	
 	private Object getHibernateProxyObject(@NotNull Object obj) {
 		try {
 			if (obj instanceof HibernateProxy) {
@@ -105,12 +103,13 @@ public abstract class BaseReferenceHandlingTranslator {
 			} else {
 				return obj;
 			}
-
-		} catch (Exception e) {
+			
+		}
+		catch (Exception e) {
 			return obj;
 		}
 	}
-
+	
 	protected Reference createPractitionerReference(@NotNull User user) {
 		if (user instanceof HibernateProxy) {
 			user = HibernateUtil.getRealObjectFromProxy(user);
