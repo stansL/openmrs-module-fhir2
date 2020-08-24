@@ -70,4 +70,29 @@ public class FhirTaskServiceImpl extends BaseFhirService<Task, FhirTask> impleme
 		
 		return searchQuery.getQueryResults(theParams, dao, translator);
 	}
+
+	private String handleIdentifier(Task task, String uuid) {
+		String openmrsUuid = task.getId();
+
+		if (task.hasIdentifier()) {
+			Identifier openmrsIdentifier = task.getIdentifier().stream().filter(i -> i.getSystem().contains("openmrs"))
+					.findFirst().orElse(null);
+			if (openmrsIdentifier != null) {
+				openmrsUuid = openmrsIdentifier.getValue();
+				uuid = openmrsUuid;
+			}
+
+			task.setId(openmrsUuid);
+		}
+
+		if (openmrsUuid == null) {
+			throw new InvalidRequestException("Task resource is missing id.");
+		}
+
+		if (openmrsUuid != uuid) {
+			throw new InvalidRequestException("Task id and provided uuid do not match");
+		}
+
+		return openmrsUuid;
+	}
 }

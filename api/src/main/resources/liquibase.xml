@@ -123,7 +123,6 @@
             <column name="owner_reference_id" type="int"/>
             <column name="encounter_reference_id" type="int"/>
             <column name="for_reference_id" type="int"/>
-            <column name="based_on" type="varchar(255)"/>
             <column name="creator" type="int">
                 <constraints nullable="false"/>
             </column>
