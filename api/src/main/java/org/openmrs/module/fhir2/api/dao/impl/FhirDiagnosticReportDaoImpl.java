@@ -40,10 +40,6 @@ public class FhirDiagnosticReportDaoImpl extends BaseFhirDao<Obs> implements Fhi
 	
 	@Override
 	public Obs createOrUpdate(Obs newObs) throws DAOException {
-		if (!newObs.isObsGrouping()) {
-			throw new IllegalArgumentException("Provided Obs must be an Obs grouping.");
-		}
-		
 		return super.createOrUpdate(newObs);
 	}
 	

@@ -71,6 +71,61 @@ public class FhirTaskServiceImpl extends BaseFhirService<Task, FhirTask> impleme
 		return searchQuery.getQueryResults(theParams, dao, translator);
 	}
 
+	/**
+	 * Save task to the DB
+	 *
+	 * @param task the task to save
+	 * @return the saved task
+	 */
+	@Override
+	public Task saveTask(Task task) {
+		return translator.toFhirResource(dao.saveTask(translator.toOpenmrsType(task)));
+	}
+
+	/**
+	 * Save task to the DB, or update task if one exists with given UUID
+	 *
+	 * @param uuid the uuid of the task to update
+	 * @param task the task to save
+	 * @return the saved task
+	 */
+	@Override
+	public Task updateTask(String uuid, Task task) {
+		uuid = handleIdentifier(task, uuid);
+
+		FhirTask openmrsTask = null;
+
+		if (uuid != null) {
+			openmrsTask = dao.getTaskByUuid(task.getId());
+		}
+
+		if (openmrsTask == null) {
+			throw new MethodNotAllowedException("No Task found to update. Use Post to create new Tasks.");
+		}
+
+		return translator.toFhirResource(dao.saveTask(translator.toOpenmrsType(openmrsTask, task)));
+	}
+
+	/**
+	 * Get a list of Tasks associated with the given Resource with the given Uuid through the basedOn
+	 * relation
+	 *
+	 * @param uuid the uuid of the associated resource
+	 * @param clazz the class of the associated resource
+	 * @return the saved task
+	 */
+	@Override
+	public Collection<Task> getTasksByBasedOn(Class<? extends DomainResource> clazz, String uuid) {
+		Collection<Task> associatedTasks = new ArrayList<>();
+
+		if (clazz == ServiceRequest.class) {
+			associatedTasks = dao.getTasksByBasedOnUuid(clazz, uuid).stream().map(translator::toFhirResource)
+					.collect(Collectors.toList());
+		}
+
+		return associatedTasks;
+	}
+
 	private String handleIdentifier(Task task, String uuid) {
 		String openmrsUuid = task.getId();
 
