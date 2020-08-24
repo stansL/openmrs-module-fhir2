@@ -16,7 +16,6 @@ import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.LazyInitializationException;
 import org.hibernate.proxy.HibernateProxy;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
@@ -96,23 +95,31 @@ public abstract class BaseReferenceHandlingTranslator {
 		
 		return reference;
 	}
-
+	
 	protected Reference createPractitionerReference(@NotNull User user) {
 		user = (User) getHibernateProxyObject(user);
-
-		Reference reference = new Reference().setReference(FhirConstants.PRACTITIONER + "/" + user.getUuid())
-		        .setType(FhirConstants.PRACTITIONER);
 		
-		if (user.getPerson() != null) {
-			if (user.getPerson().getPersonName() != null) {
-				reference.setDisplay(user.getPerson().getPersonName().getFullName());
+		try {
+			Reference reference = new Reference().setReference(FhirConstants.PRACTITIONER + "/" + user.getUuid())
+			        .setType(FhirConstants.PRACTITIONER);
+			
+			if (user.getPerson() != null) {
+				if (user.getPerson().getPersonName() != null) {
+					reference.setDisplay(user.getPerson().getPersonName().getFullName());
+				}
 			}
+			return reference;
+		}
+		catch (Exception e) {
+			return new Reference().setReference(FhirConstants.PRACTITIONER + "/" + user.getId())
+			        .setType(FhirConstants.PRACTITIONER);
+		}
+		finally {
+			return null;
 		}
 		
-		return reference;
 	}
-
-
+	
 	private Object getHibernateProxyObject(@NotNull Object obj) {
 		try {
 			if (obj instanceof HibernateProxy) {
@@ -120,9 +127,9 @@ public abstract class BaseReferenceHandlingTranslator {
 			} else {
 				return obj;
 			}
-
+			
 		}
-		catch (LazyInitializationException e) {
+		catch (Exception e) {
 			return obj;
 		}
 	}
