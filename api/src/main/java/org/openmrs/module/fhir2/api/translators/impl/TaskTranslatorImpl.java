@@ -119,10 +119,10 @@ public class TaskTranslatorImpl implements TaskTranslator {
 		fhirTask.setAuthoredOn(openmrsTask.getDateCreated());
 		
 		fhirTask.setLastModified(openmrsTask.getDateChanged());
-
+		
 		fhirTask.setIdentifier(Collections.singletonList(
-				new Identifier().setSystem(FhirConstants.OPENMRS_URI + "/identifier").setValue(openmrsTask.getUuid())));
-
+		    new Identifier().setSystem(FhirConstants.OPENMRS_URI + "/identifier").setValue(openmrsTask.getUuid())));
+		
 		fhirTask.getMeta().setLastUpdated(openmrsTask.getDateChanged());
 	}
 	

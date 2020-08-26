@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.fhir2.api.impl;
 
+import java.util.Collection;
+
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.IBundleProvider;
 import ca.uhn.fhir.rest.param.DateRangeParam;
@@ -17,6 +19,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Task;
 import org.openmrs.module.fhir2.FhirConstants;
 import org.openmrs.module.fhir2.FhirTask;
@@ -70,7 +73,7 @@ public class FhirTaskServiceImpl extends BaseFhirService<Task, FhirTask> impleme
 		
 		return searchQuery.getQueryResults(theParams, dao, translator);
 	}
-
+	
 	/**
 	 * Save task to the DB
 	 *
@@ -81,7 +84,7 @@ public class FhirTaskServiceImpl extends BaseFhirService<Task, FhirTask> impleme
 	public Task saveTask(Task task) {
 		return translator.toFhirResource(dao.saveTask(translator.toOpenmrsType(task)));
 	}
-
+	
 	/**
 	 * Save task to the DB, or update task if one exists with given UUID
 	 *
@@ -92,20 +95,20 @@ public class FhirTaskServiceImpl extends BaseFhirService<Task, FhirTask> impleme
 	@Override
 	public Task updateTask(String uuid, Task task) {
 		uuid = handleIdentifier(task, uuid);
-
+		
 		FhirTask openmrsTask = null;
-
+		
 		if (uuid != null) {
 			openmrsTask = dao.getTaskByUuid(task.getId());
 		}
-
+		
 		if (openmrsTask == null) {
 			throw new MethodNotAllowedException("No Task found to update. Use Post to create new Tasks.");
 		}
-
+		
 		return translator.toFhirResource(dao.saveTask(translator.toOpenmrsType(openmrsTask, task)));
 	}
-
+	
 	/**
 	 * Get a list of Tasks associated with the given Resource with the given Uuid through the basedOn
 	 * relation
@@ -117,37 +120,37 @@ public class FhirTaskServiceImpl extends BaseFhirService<Task, FhirTask> impleme
 	@Override
 	public Collection<Task> getTasksByBasedOn(Class<? extends DomainResource> clazz, String uuid) {
 		Collection<Task> associatedTasks = new ArrayList<>();
-
+		
 		if (clazz == ServiceRequest.class) {
 			associatedTasks = dao.getTasksByBasedOnUuid(clazz, uuid).stream().map(translator::toFhirResource)
-					.collect(Collectors.toList());
+			        .collect(Collectors.toList());
 		}
-
+		
 		return associatedTasks;
 	}
-
+	
 	private String handleIdentifier(Task task, String uuid) {
 		String openmrsUuid = task.getId();
-
+		
 		if (task.hasIdentifier()) {
 			Identifier openmrsIdentifier = task.getIdentifier().stream().filter(i -> i.getSystem().contains("openmrs"))
-					.findFirst().orElse(null);
+			        .findFirst().orElse(null);
 			if (openmrsIdentifier != null) {
 				openmrsUuid = openmrsIdentifier.getValue();
 				uuid = openmrsUuid;
 			}
-
+			
 			task.setId(openmrsUuid);
 		}
-
+		
 		if (openmrsUuid == null) {
 			throw new InvalidRequestException("Task resource is missing id.");
 		}
-
+		
 		if (openmrsUuid != uuid) {
 			throw new InvalidRequestException("Task id and provided uuid do not match");
 		}
-
+		
 		return openmrsUuid;
 	}
 }

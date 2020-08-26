@@ -230,18 +230,18 @@ public class FhirTaskTranslatorImplTest {
 		assertThat(result, notNullValue());
 		assertThat(result.getStatus(), equalTo(OPENMRS_TASK_STATUS));
 	}
-
+	
 	@Test
 	public void toOpenmrsType_shouldTranslateUnsupportedStatusToUnknown() {
 		Task task = new Task();
 		task.setStatus(Task.TaskStatus.ENTEREDINERROR);
-
+		
 		FhirTask result = taskTranslator.toOpenmrsType(task);
-
+		
 		assertThat(result, notNullValue());
 		assertThat(result.getStatus(), equalTo(FhirTask.TaskStatus.UNKNOWN));
 	}
-
+	
 	@Test
 	public void toOpenmrsType_shouldUpdateStatusOnExistingTask() {
 		FhirTask task = new FhirTask();
@@ -279,18 +279,18 @@ public class FhirTaskTranslatorImplTest {
 		assertThat(result, notNullValue());
 		assertThat(result.getIntent(), equalTo(OPENMRS_TASK_INTENT));
 	}
-
+	
 	@Test
 	public void toOpenmrsType_shouldTranslateUnsupportedIntent() {
 		Task task = new Task();
 		task.setIntent(Task.TaskIntent.PLAN);
-
+		
 		FhirTask result = taskTranslator.toOpenmrsType(task);
-
+		
 		assertThat(result, notNullValue());
 		assertThat(result.getIntent(), equalTo(FhirTask.TaskIntent.ORDER));
 	}
-
+	
 	@Test
 	public void toOpenmrsType_shouldUpdateIntentOnExistingTask() {
 		FhirTask task = new FhirTask();
@@ -584,20 +584,20 @@ public class FhirTaskTranslatorImplTest {
 		assertThat(result, notNullValue());
 		assertThat(result.getLastModified(), equalTo(dateModified));
 	}
-
+	
 	// Task.Identifier
 	@Test
 	public void toFhirResource_shouldSetBusinessIdentifier() {
 		// https://www.hl7.org/fhir/resource.html#identifiers
 		FhirTask task = new FhirTask();
-
+		
 		Task result = taskTranslator.toFhirResource(task);
-
+		
 		assertThat(result, notNullValue());
 		assertThat(result.getIdentifier(), hasSize(1));
-
+		
 		Identifier identifier = result.getIdentifier().iterator().next();
-
+		
 		assertThat(identifier.getValue(), equalTo(task.getUuid()));
 		assertThat(identifier.getSystem(), equalTo(FhirConstants.OPENMRS_URI + "/identifier"));
 	}
