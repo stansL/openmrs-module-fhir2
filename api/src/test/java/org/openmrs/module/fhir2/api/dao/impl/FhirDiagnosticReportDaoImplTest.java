@@ -96,12 +96,18 @@ public class FhirDiagnosticReportDaoImplTest extends BaseModuleContextSensitiveT
 		assertThat(result.getGroupMembers().iterator().next().getUuid(), equalTo(CHILD_UUID));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void saveObsGroup_shouldNotSaveObsWithNoGroupMembers() {
 		Obs newObs = new Obs();
-		newObs.setUuid(NEW_UUID);
+		newObs.setObsDatetime(new Date());
+		newObs.setPerson(patientService.getPatient(7));
+		newObs.setConcept(conceptService.getConcept(23));
+		newObs.setValueText("test");
 		
-		dao.createOrUpdate(newObs);
+		Obs result = dao.createOrUpdate(newObs);
+		
+		assertThat(result, notNullValue());
+		assertThat(result.isObsGrouping(), equalTo(false));
 	}
 	
 	@Test
