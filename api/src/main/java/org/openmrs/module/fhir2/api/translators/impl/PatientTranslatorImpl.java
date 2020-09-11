@@ -154,7 +154,9 @@ public class PatientTranslatorImpl implements PatientTranslator {
 		}
 		
 		for (Identifier identifier : patient.getIdentifier()) {
-			currentPatient.addIdentifier(identifierTranslator.toOpenmrsType(identifier));
+			if (identifierTranslator.toOpenmrsType(identifier) != null) {
+				currentPatient.addIdentifier(identifierTranslator.toOpenmrsType(identifier));
+			}
 		}
 		
 		for (HumanName name : patient.getName()) {
